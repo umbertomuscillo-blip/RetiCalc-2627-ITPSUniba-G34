@@ -32,7 +32,6 @@ int main(void) {
     }
 #endif
 
-    /* 2) Il client legge da tastiera l'IP dell'host e il numero di porta */
     char serverIP[64];
     int serverPort = PROTOPORT;
 
@@ -50,7 +49,6 @@ int main(void) {
         return -1;
     }
 
-    /* Creazione della socket */
     int cSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (cSocket < 0) {
         ErrorHandler("socket creation failed.\n");
@@ -58,14 +56,12 @@ int main(void) {
         return -1;
     }
 
-    /* Costruzione dell'indirizzo del server */
     struct sockaddr_in sad;
     memset(&sad, 0, sizeof(sad));
     sad.sin_family = AF_INET;
     sad.sin_addr.s_addr = inet_addr(serverIP);
     sad.sin_port = htons(serverPort);
 
-    /* 3) Il client richiede la connessione al server */
     if (connect(cSocket, (struct sockaddr *)&sad, sizeof(sad)) < 0) {
         ErrorHandler("Failed to connect.\n");
         closesocket(cSocket);
@@ -73,7 +69,6 @@ int main(void) {
         return -1;
     }
 
-    /* 6) Il client riceve la stringa "connessione avvenuta" e la stampa */
     char buf[BUFFERSIZE];
     memset(buf, 0, sizeof(buf));
     int bytesRcvd = recv(cSocket, buf, BUFFERSIZE - 1, 0);
@@ -86,7 +81,6 @@ int main(void) {
     buf[bytesRcvd] = '\0';
     printf("%s\n", buf);
 
-    /* 7) -> 10) Ciclo di lettura n1, n2, n3 e ricezione risultato o QUIT */
     while (1) {
         int n1, n2, n3;
         printf("Inserisci tre numeri interi (n1 n2 n3): ");
@@ -105,7 +99,6 @@ int main(void) {
             break;
         }
 
-        /* 10) Il client riceve la stringa dal server e la visualizza sullo STD output */
         memset(buf, 0, sizeof(buf));
         bytesRcvd = recv(cSocket, buf, BUFFERSIZE - 1, 0);
         if (bytesRcvd <= 0) {
@@ -115,7 +108,6 @@ int main(void) {
         buf[bytesRcvd] = '\0';
         printf("%s\n", buf);
 
-        /* Se la stringa corrisponde a "QUIT" chiude la connessione e termina */
         if (strcmp(buf, "QUIT") == 0) {
             break;
         }

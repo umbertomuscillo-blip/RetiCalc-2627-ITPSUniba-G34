@@ -11,4 +11,4 @@ typedef struct {
     int n3;
 } msg_numbers_t;
 
-#endif /* PROTOCOL_H_ */
+#endif

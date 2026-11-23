@@ -45,7 +45,6 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
-    /* 1) Creazione della socket del server */
     int mySocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (mySocket < 0) {
         ErrorHandler("socket creation failed.\n");
@@ -56,7 +55,6 @@ int main(int argc, char *argv[]) {
     int opt = 1;
     setsockopt(mySocket, SOL_SOCKET, SO_REUSEADDR, (const char *)&opt, sizeof(opt));
 
-    /* Assegnazione indirizzo alla socket */
     struct sockaddr_in sad;
     memset(&sad, 0, sizeof(sad));
     sad.sin_family = AF_INET;
@@ -70,7 +68,6 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    /* Settaggio della socket all'ascolto */
     if (listen(mySocket, QLEN) < 0) {
         ErrorHandler("listen() failed.\n");
         closesocket(mySocket);
@@ -85,7 +82,6 @@ int main(int argc, char *argv[]) {
     int clientSocket;
     socklen_t clientLen;
 
-    /* 1) & 11) Il server resta sempre in ascolto */
     while (1) {
         clientLen = sizeof(cad);
         clientSocket = accept(mySocket, (struct sockaddr *)&cad, &clientLen);
@@ -94,11 +90,9 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        /* 4) Stabilita la connessione, visualizza l'IP del client */
         printf("connesso con il client il cui nome IP: %s\n", inet_ntoa(cad.sin_addr));
         fflush(stdout);
 
-        /* 5) Il server invia al client la stringa "connessione avvenuta" */
         const char *welcomeMsg = "connessione avvenuta";
         int welcomeLen = (int)strlen(welcomeMsg) + 1;
         if (send(clientSocket, welcomeMsg, welcomeLen, 0) != welcomeLen) {
@@ -107,7 +101,6 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        /* Ciclo di gestione delle richieste del client connesso */
         while (1) {
             msg_numbers_t netNums;
             int bytesRcvd = recv(clientSocket, (char *)&netNums, sizeof(msg_numbers_t), 0);
@@ -120,11 +113,9 @@ int main(int argc, char *argv[]) {
             int n3 = ntohl(netNums.n3);
             int res = n1 + n2 - n3;
 
-            /* 8) Il server visualizza sullo std output "la somma di n1+n2-n3=res" */
             printf("la somma di %d+%d-%d=%d\n", n1, n2, n3, res);
             fflush(stdout);
 
-            /* 9) Se res = 100 invia "QUIT", altrimenti invia il risultato res */
             char replyBuf[BUFFERSIZE];
             memset(replyBuf, 0, sizeof(replyBuf));
             if (res == 100) {
