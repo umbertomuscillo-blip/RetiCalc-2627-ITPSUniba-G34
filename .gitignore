@@ -4,3 +4,5 @@
 *.out
 Debug/
 Release/
+.cproject
+.settings/
