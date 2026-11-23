@@ -36,6 +36,7 @@ int main(void) {
     int serverPort = PROTOPORT;
 
     printf("Inserisci l'indirizzo IP del server (es. 127.0.0.1): ");
+    fflush(stdout);
     if (scanf("%63s", serverIP) != 1) {
         ErrorHandler("Errore nella lettura dell'indirizzo IP.\n");
         ClearWinSock();
@@ -43,6 +44,7 @@ int main(void) {
     }
 
     printf("Inserisci il numero di porta del server (es. %d): ", PROTOPORT);
+    fflush(stdout);
     if (scanf("%d", &serverPort) != 1 || serverPort <= 0) {
         ErrorHandler("Errore nella lettura della porta.\n");
         ClearWinSock();
@@ -84,6 +86,7 @@ int main(void) {
     while (1) {
         int n1, n2, n3;
         printf("Inserisci tre numeri interi (n1 n2 n3): ");
+        fflush(stdout);
         if (scanf("%d %d %d", &n1, &n2, &n3) != 3) {
             ErrorHandler("Input non valido.\n");
             break;
